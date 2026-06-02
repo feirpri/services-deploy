@@ -1,0 +1,17 @@
+# 根编排：通过 include 聚合各子服务
+# 启动：  docker compose --env-file .env up -d
+# 仅启动部分：docker compose --env-file .env up -d caddy casdoor
+name: services-deploy
+
+include:
+  - services/caddy/compose.yml
+  - services/casdoor/compose.yml
+  - services/umami/compose.yml
+  - services/sub2api/compose.yml
+  - services/happyImage/compose.yml
+  - services/mihomo/compose.yml
+
+networks:
+  edge:
+    name: ${EDGE_NETWORK:-edge}
+    driver: bridge

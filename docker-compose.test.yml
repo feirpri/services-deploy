@@ -1,0 +1,7 @@
+# 测试环境覆盖：使用独立网络与子域名前缀 test-
+# 启动：docker compose --env-file .env -f docker-compose.yml -f docker-compose.test.yml up -d
+name: services-deploy-test
+
+networks:
+  edge:
+    name: ${EDGE_NETWORK:-edge}-test
