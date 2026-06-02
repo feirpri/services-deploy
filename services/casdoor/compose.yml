@@ -1,0 +1,31 @@
+services:
+  casdoor-db:
+    image: postgres:16-alpine
+    container_name: casdoor-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${CASDOOR_DB_USER}
+      POSTGRES_PASSWORD: ${CASDOOR_DB_PASSWORD}
+      POSTGRES_DB: ${CASDOOR_DB_NAME}
+      TZ: ${TZ:-Asia/Shanghai}
+    volumes:
+      - casdoor_db:/var/lib/postgresql/data
+    networks: [edge]
+
+  casdoor:
+    image: ${CASDOOR_IMAGE:-casbin/casdoor:latest}
+    container_name: casdoor
+    restart: unless-stopped
+    depends_on: [casdoor-db]
+    environment:
+      RUNNING_IN_DOCKER: "true"
+      driverName: postgres
+      dataSourceName: "user=${CASDOOR_DB_USER} password=${CASDOOR_DB_PASSWORD} host=casdoor-db port=5432 sslmode=disable dbname=${CASDOOR_DB_NAME}"
+      origin: ${CASDOOR_ORIGIN_FRONTEND}
+      TZ: ${TZ:-Asia/Shanghai}
+    volumes:
+      - ./services/casdoor/conf:/conf
+    networks: [edge]
+
+volumes:
+  casdoor_db:

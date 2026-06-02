@@ -1,0 +1,25 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# 统一入口：按子域名分发
+auth.{$ROOT_DOMAIN} {
+	reverse_proxy casdoor:8000
+}
+
+stats.{$ROOT_DOMAIN} {
+	reverse_proxy umami:3000
+}
+
+sub.{$ROOT_DOMAIN} {
+	reverse_proxy sub2api:8080
+}
+
+img.{$ROOT_DOMAIN} {
+	reverse_proxy happy-image:8000
+}
+
+# 默认 catch-all（可按需移除）
+:80 {
+	respond "services-deploy edge ready" 200
+}
